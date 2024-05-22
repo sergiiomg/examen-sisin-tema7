@@ -1,0 +1,69 @@
+SIMULACRO EXAMEN
+
+Vagrant.configure("2") do |config|
+ 
+  config.vm.box = "ubuntu/xenial64"
+  config.vm.hostname = "sergio-melendi-garcia"
+
+  config.vm.provision "shell", inline: <<-SHELL
+
+    echo "-- Insertar datos de ejemplo en la tabla 'libros'" > /home/vagrant/datos_libros.sql
+    echo "INSERT INTO gestion_libreria.libros (titulo, autor, anio_publicacion, genero, precio) VALUES" >> /home/vagrant/datos_libros.sql
+    echo "('Cien Años de Soledad', 'Gabriel García Márquez', 1967, 'Novela', 15.99)," >> /home/vagrant/datos_libros.sql
+    echo "('Don Quijote de la Mancha', 'Miguel de Cervantes', 1605, 'Novela', 12.99)," >> /home/vagrant/datos_libros.sql
+    echo "('1984', 'George Orwell', 1949, 'Distopía', 13.99);" >> /home/vagrant/datos_libros.sql
+
+  SHELL
+
+end
+
+1. Hacer git init, generar Vagrantfile, indicar box y hostname.
+2. Hacer el echo en la provisión para los datos de las tablas.
+3. Vagrant ssh y sudo su
+4. apt update (se puede en la provisión)
+5. apt install mysql-server -y contraseña: root
+6. systemctl status mysql
+	     start mysql
+             enable mysql
+7. mysql -u root -p contraseña: root
+8. CREATE DATABASE nombre_database;
+9. USE nombre_database;
+   CREATE TABLE nombre(
+   -aaaa,
+   -bbbb,
+   -cccc
+   -);
+10. SOURCE nombre_archivo.sql
+11. systemctl stop mysql -> desde el prompt de la virtualización
+12. dentro de sql START y ALTER DATABASE
+
+
+EJEMPLO 1 CLASE
+
+Vagrant.configure("2") do |config| 
+    config.vm.box = "ubuntu/xenial64"
+    config.vm.network "private_network", ip: "192.168.50.53"
+    config.vm.synced_folder ".", "/ejemplo_inicial_mysql"
+
+    config.vm.provision "shell", inline: <<-SHELL
+
+        sudo apt update
+
+        sudo apt install -y nginx
+
+        echo "-- Insertar datos de ejemplo en la tabla 'empleados'" > /home/vagrant/datos_empleados.sql
+        echo "INSERT INTO gestion_empleados.empleados (nombre, apellido, edad, salario, departamento) VALUES" >> /home/vagrant/datos_empleados.sql
+        echo "('Miguel', 'Cueto', 22, '2500.00', 'Ventas')," >> /home/vagrant/datos_empleados.sql
+        echo "('Manolo', 'Alonso', 18, '2500.00', 'Marketing')," >> /home/vagrant/datos_empleados.sql
+        echo "('Raquel', 'Sánchez', 19, '2500.00', 'Desarrollo')," >> /home/vagrant/datos_empleados.sql
+        echo "('Teresa', 'Carril', 20, '2500.00', 'Ventas')," >> /home/vagrant/datos_empleados.sql
+        echo "('Pepe', 'Couce', 21, '2500.00', 'Marketing')" >> /home/vagrant/datos_empleados.sql
+
+    SHELL
+end
+
+
+Para vincular directorio sincronizado
+
+sudo sed -i -e 's/\\/var/\\/www/\\/html/\\/nombre_directorio/g' /etc/nginx/sites-enabled/default
+
